@@ -1,6 +1,6 @@
 #jstick
 
-## Simple javascript joystick utility with no dependencies
+Simple javascript joystick utility with no dependencies
 
 # Usage:
 ```html
