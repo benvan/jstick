@@ -8,7 +8,7 @@ var Point = function(x,y){
 
 var JStick = function(opts){
     var bind = function(joystick){
-        target.addEventListener('mousedown',function(ev){
+        opts.target.addEventListener('mousedown',function(ev){
             if (joystick.enabled && ev.button == 0){
                 opts.onactivate();
                 joystick.active = true;
