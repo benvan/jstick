@@ -7,10 +7,14 @@ var Point = function(x,y){
 };
 
 var JStick = function(opts){
+
+    var extend = function(a,b){ for (var i in b) a[i] = b[i]; return a; };
+    var shallowClone = function(o){ return extend({}, o); };
+
     var bind = function(joystick){
-        opts.target.addEventListener('mousedown',function(ev){
+        joystick.settings.target.addEventListener('mousedown',function(ev){
             if (joystick.enabled && ev.button == 0){
-                opts.onactivate();
+                joystick.settings.onactivate();
                 joystick.active = true;
                 joystick.start = new Point(ev.pageX, ev.pageY);
             }
@@ -19,30 +23,35 @@ var JStick = function(opts){
             if (joystick.enabled){
                 var wasActive = joystick.active;
                 joystick.active = false;
-                if (wasActive) opts.onrelease();
+                if (wasActive) joystick.settings.onrelease();
             }
         });
         document.addEventListener('mousemove', function(ev){
             if (joystick.enabled){
                 joystick.now.x = ev.pageX;
                 joystick.now.y = ev.pageY;
-                if (joystick.active) opts.ondrag(joystick.now);
+                if (joystick.active) joystick.settings.ondrag(joystick.now);
             }
         });
     };
-    var init = function(joystick){
-        var noop = function(){};
-        ['onrelease','onactivate','ondrag'].forEach(function(i){ opts[i] || (opts[i] = noop); });
-        opts.target || (opts.target = document);
-        bind(joystick);
-        return joystick;
-    };
+
     var diff = function(dimension){
         return function(sensitivity){
             return (this.now[dimension] - this.start[dimension]) / (sensitivity ? Math.pow(10,sensitivity) : 1);
         }
     };
-    return init({
+
+    var noop = function(){};
+    var defaults = {
+        target: document,
+        onrelease: noop,
+        onactivate: noop,
+        ondrag: noop
+    };
+    var settings = extend(defaults, opts);
+
+    var joystick = extend(this, {
+        settings: settings,
         enabled: true,
         active: false,
         start: new Point(0,0),
@@ -50,4 +59,8 @@ var JStick = function(opts){
         dx: diff('x'),
         dy: diff('y')
     });
+
+    bind(joystick);
+
+    return joystick;
 };
