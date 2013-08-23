@@ -14,7 +14,7 @@ var JStick = function(opts){
     var bind = function(joystick){
         joystick.settings.target.addEventListener('mousedown',function(ev){
             if (joystick.enabled && ev.button == 0){
-                joystick.settings.onactivate();
+                joystick.settings.onactivate.apply(joystick);
                 joystick.active = true;
                 joystick.start = new Point(ev.pageX, ev.pageY);
             }
@@ -23,14 +23,14 @@ var JStick = function(opts){
             if (joystick.enabled){
                 var wasActive = joystick.active;
                 joystick.active = false;
-                if (wasActive) joystick.settings.onrelease();
+                if (wasActive) joystick.settings.onrelease.apply(joystick);
             }
         });
         document.addEventListener('mousemove', function(ev){
             if (joystick.enabled){
                 joystick.now.x = ev.pageX;
                 joystick.now.y = ev.pageY;
-                if (joystick.active) joystick.settings.ondrag(joystick.now);
+                if (joystick.active) joystick.settings.ondrag.apply(joystick);
             }
         });
     };
