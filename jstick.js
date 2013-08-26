@@ -37,13 +37,14 @@ var JStick = function(opts){
 
     var diff = function(dimension){
         return function(sensitivity){
-            return (this.now[dimension] - this.start[dimension]) / (sensitivity ? Math.pow(10,sensitivity) : 1);
+            return (this.now[dimension] - this.start[dimension]) / (sensitivity ? Math.pow(10,sensitivity) : 1) * (( this.settings.invertY && dimension == 'y') ? -1 : 1);
         }
     };
 
     var noop = function(){};
     var defaults = {
         target: document,
+        invertY: true,
         onrelease: noop,
         onactivate: noop,
         ondrag: noop
